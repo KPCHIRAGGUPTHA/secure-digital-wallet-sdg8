@@ -2,15 +2,12 @@
 const nextConfig = {
   output: "export",
 
-  basePath: "/secure-digital-wallet-sdg8",
-  assetPrefix: "/secure-digital-wallet-sdg8/",
+  images: {
+    unoptimized: true,
+  },
 
   typescript: {
     ignoreBuildErrors: true,
-  },
-
-  images: {
-    unoptimized: true,
   },
 };
 
