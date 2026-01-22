@@ -1,3 +1,12 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
@@ -8,13 +17,13 @@ model User {
 
   wallet       Wallet?
   audits       AuditLog[]
-  transactions Transaction[] @relation("UserTransactions")
+  transactions Transaction[]
 }
 
 model Wallet {
   id        String   @id @default(uuid())
   userId    String   @unique
-  balance   Decimal  @default(0)
+  balance   Int      @default(0)   // changed to Int for SQLite safety
   isFrozen  Boolean  @default(false)
   updatedAt DateTime @updatedAt
 
@@ -24,13 +33,13 @@ model Wallet {
 model Transaction {
   id        String   @id @default(uuid())
   userId    String
-  type      String   // SEND, RECEIVE
-  amount    Decimal
-  status    String   // PENDING, SUCCESS, FAILED
+  type      String
+  amount    Int
+  status    String
   reference String?
   createdAt DateTime @default(now())
 
-  user User @relation("UserTransactions", fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model AuditLog {
