@@ -1,0 +1,44 @@
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  wallet       Wallet?
+  audits       AuditLog[]
+  transactions Transaction[] @relation("UserTransactions")
+}
+
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  balance   Decimal  @default(0)
+  isFrozen  Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // SEND, RECEIVE
+  amount    Decimal
+  status    String   // PENDING, SUCCESS, FAILED
+  reference String?
+  createdAt DateTime @default(now())
+
+  user User @relation("UserTransactions", fields: [userId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+}
